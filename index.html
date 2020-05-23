@@ -16,6 +16,10 @@
                     document.querySelector("#peerid").innerHTML = id;
                 });
 
+                peer.on('connection', conn => {
+                    alert('connected!');
+                })
+
                 peer.on('call', call => {
                     getStream((s) => {
                         call.answer(s);
@@ -27,11 +31,13 @@
                     e.preventDefault();
                     //get media stream
                     getStream((s)=>{
-                        let call = peer.call(document.querySelector('#receiver'), s);
+                        let call = peer.call(document.querySelector('#receiver').value, s);
                         call.on('stream', stream => {
                             document.querySelector("#theirs").srcObject = stream;
                         });
                     });
+                    
+                    
                     
                 });
 
