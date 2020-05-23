@@ -5,12 +5,12 @@
         <script src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', ()=>{
-
-                var peer = new Peer({
+                var opts = {
                     host: '3dcfbf19.ngrok.io',
                     path: '/myapp',
                     proxied: true
-                });
+                };
+                var peer = new Peer();
                 peer.on('open', id => {
                     document.querySelector("#peerid").innerHTML = id;
                 });
