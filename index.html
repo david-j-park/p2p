@@ -8,9 +8,10 @@
                 var opts = {
                     host: '3dcfbf19.ngrok.io',
                     path: '/myapp',
-                    proxied: true
+                    proxied: true,
+                    debug: 2
                 };
-                var peer = new Peer();
+                var peer = new Peer(opts);
                 peer.on('open', id => {
                     document.querySelector("#peerid").innerHTML = id;
                 });
