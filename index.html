@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/peerjs@1.2.0/dist/peerjs.min.js"></script>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', ()=>{
+
+                var peer = new Peer({
+                    host: '3dcfbf19.ngrok.io',
+                    port: 80,
+                    path: '/myapp'
+                });
+                peer.on('open', id => {
+                    document.querySelector("#peerid").innerHTML = id;
+                });
+
+                peer.on('call', call => {
+                    getStream((s) => {
+                        call.answer(s);
+                    })
+                });
+
+                //intitate a call
+                document.querySelector("#connect").addEventListener('click', e => {
+                    //get media stream
+                    getStream((s)=>{
+                        let call = peer.call(document.querySelector('#receiver'), s);
+                        call.on('stream', stream => {
+                            document.querySelector("#theirs").srcObject = stream;
+                        });
+                    });
+                    
+                });
+
+                var ourStream;
+                async function getStream(andThen){
+                    if (!ourStream) {
+                        try {
+                            ourStream = await navigator.mediaDevices.getUserMedia({
+                                audio: true,
+                                video: true
+                            });    
+                        }
+                        catch (err){
+                            console.log('video unavailable', err);
+                            return;
+                        }
+                    }
+                    if (andThen){
+                        andThen(ourStream);
+                    }
+
+                }
+
+                //start our video
+                getStream(s => {
+                    document.querySelector('#mine').srcObject = s;
+                })
+
+            })
+        </script>
+        <style type="text/css">
+            video {
+                width: 400px;
+                height: 300px;
+                border: solid 1px #333;
+                transform: scaleX(-1);
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="peerid"></h1>
+        <label>Enter a peer id to connect: </label>
+        <input type="text" id="receiver"/>
+        <button id="connect">Call</button>
+        <video id="theirs" autoplay></video>
+        <video id="mine" autoplay muted></video>
+    </body>
+</html>
