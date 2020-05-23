@@ -8,7 +8,8 @@
 
                 var peer = new Peer({
                     host: '3dcfbf19.ngrok.io',
-                    path: '/myapp'
+                    path: '/myapp',
+                    proxied: true
                 });
                 peer.on('open', id => {
                     document.querySelector("#peerid").innerHTML = id;
@@ -22,6 +23,7 @@
 
                 //intitate a call
                 document.querySelector("#connect").addEventListener('click', e => {
+                    e.preventDefault();
                     //get media stream
                     getStream((s)=>{
                         let call = peer.call(document.querySelector('#receiver'), s);
